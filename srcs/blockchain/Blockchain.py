@@ -1,7 +1,12 @@
 import logging
-from ..blocks import Block, Tx, Input, Output
-from ..verifiers import TxVerifier, BlockVerifier
-from ..verifiers.exceptions import BlockOutOfChain, BlockVerificationFailed
+from ..blocks.Input import Input
+from ..blocks.Output import Output
+from ..blocks.Tx import Tx
+from ..blocks.Block import Block
+from ..verifiers.TxVerifier import TxVerifier
+from ..verifiers.BlockVerifier import BlockVerifier
+from ..verifiers.exceptions.BlockOutOfChain import BlockOutOfChain
+from ..verifiers.exceptions.BlockVerificationFailed import BlockVerificationFailed
 
 logger = logging.getLogger('Blockchain')
 
@@ -74,17 +79,17 @@ class Blockchain:
         tv = TxVerifier(self.db)
         fee = tv.verify(tx.inputs, tx.outputs)
         self.db.transaction_by_hash[tx.hash] = tx.as_dict
-        self.unconfirmed_transactions.add(fee, tx.hash)
+        self.unconfirmed_transactions.add((fee, tx.hash))
         return True
 
     def force_block(self, check_stop=None):
-        txs = sorted(self.unconfirmed_transactions, key=lambda x:-x[0])[:self.deb.config['txs_per_block']]
+        txs = sorted(self.unconfirmed_transactions, key=lambda x:-x[0])[:self.db.config['txs_per_block']]
         self.current_block_transactions = set(txs)
         fee = sum([v[0] for v in txs])
         txs = [Tx.from_dict(self.db.transaction_by_hash[v[1]]) for v in txs ]
         block = Block(
-            txs=[self.create_coinbase_tx(tee)] + txs),
-            index=self.head.index + 1,
+            txs=[self.create_coinbase_tx(fee)] + txs,
+            index=self.head.index+1,
             prev_hash=self.head.hash(),
         )
         self.mine_block(block, check_stop)
@@ -95,13 +100,13 @@ class Blockchain:
         for tx in block.txs:
             self.db.transaction_by_hash[tx.hash] = tx.as_dict
             for out in tx.outputs:
-                self.db.unspent_txs_by_user_hash[str(out.address)].add(tx.hash, out.hash)
+                self.db.unspent_txs_by_user_hash[str(out.address)].add((tx.hash, out.hash))
                 self.db.unspent_outputs_amount[str(out.address)][out.hash] = int(out.amount)
             for inp in tx.inputs:
                 if inp.prev_tx_hash == 'COINBASE':
                     continue
                 prev_out = self.db.transaction_by_hash[inp.prev_tx_hash]['outputs'][inp.output_index]
-                self.db.unspent_txs_by_user_hash[prev_out['address']].remove(inp.prev_tx_hash, prev_out['hash'])
+                self.db.unspent_txs_by_user_hash[prev_out['address']].remove((inp.prev_tx_hash, prev_out['hash']))
                 del self.db.unspent_outputs_amount[prev_out['address']][prev_out['hash']]
         if self.on_new_block:
             self.on_new_block(block, self.db)
@@ -115,19 +120,19 @@ class Blockchain:
 
         for tx in block.txs:
             for out in tx.outputs:
-                self.db.unspent_txs_by_user_hash[str(out.address)].remove(tx.hash, out.hash)
+                self.db.unspent_txs_by_user_hash[str(out.address)].remove((tx.hash, out.hash))
                 del self.db.unspent_outputs_amount[str(out.address)][out.hash]
                 total_amount_out += out.amount
             for inp in tx.inputs:
                 if inp.prev_tx_hash == 'COINBASE':
                     continue
                 prev_out = self.db.transaction_by_hash[inp.prev_tx_hash]['outputs'][inp.output_index]
-                self.db.unspent_txs_by_user_hash[prev_out['address']].add(inp.prev_tx_hash, prev_out['hash'])
+                self.db.unspent_txs_by_user_hash[prev_out['address']].add((inp.prev_tx_hash, prev_out['hash']))
                 self.db.unspent_outputs_amount[prev_out['address']][prev_out['hash']] = prev_out['amount']
                 total_amount_in += int(prev_out['amount'])
             
             fee = total_amount_in - total_amount_out
-            self.unconfirmed_transactions.add(fee, tx.hash)
+            self.unconfirmed_transactions.add((fee, tx.hash))
         if self.on_prev_block:
             self.on_prev_block(block, self.db)
 

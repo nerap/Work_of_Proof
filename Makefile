@@ -12,10 +12,21 @@ $(VENV)/bin/activate: requirements.txt
 venv: $(VENV)/bin/activate
 
 run: venv
-	./$(VENV)/bin/python3 main.py
+	./$(VENV)/bin/python3 pytest.py
+
+m_one:
+	./venv/bin/python3 main.py --port=8000 --mine=1
+
+m_two:
+	./venv/bin/python3 main.py --port=8001 --mine=1
+
+m_three:
+	./venv/bin/python3 main.py --port=8002 --mine=1
+
+re : clean all
 
 clean:
 	rm -rf $(VENV)
 	find . -type f -name '*.pyc' -delete
 
-.PHONY: all venv run clean
+.PHONY: all venv run clean re

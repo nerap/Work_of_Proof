@@ -16,7 +16,7 @@ class Tx:
             return self._hash
         inp_hash = sha256((str([el.as_dict for el in self.inputs]) + str(self.timestamp)).encode()).hexdigest()
         for el in self.outputs:
-            el.inp_hash = inp_hash
+            el.input_hash = inp_hash
         
         hash_string = '{}{}{}'.format([el.as_dict for el in self.inputs], [el.as_dict for el in self.outputs], self.timestamp)
         self._hash = sha256(sha256(hash_string.encode()).hexdigest().encode('utf8')).hexdigest()
