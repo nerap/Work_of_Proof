@@ -1,0 +1,2 @@
+class BlockVerificationFailed(Exception):
+    pass
