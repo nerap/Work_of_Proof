@@ -37,4 +37,4 @@ class Wallet:
         return self._priv.save_pkcs1()   
 
     def sign(self, hash):
-        return binascii.hexlify(rsa.sign(has, self._priv, 'SHA-256')).decode()
+        return binascii.hexlify(rsa.sign(hash, self._priv, 'SHA-256')).decode()
