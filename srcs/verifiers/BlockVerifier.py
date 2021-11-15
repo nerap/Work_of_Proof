@@ -1,6 +1,5 @@
 from .TxVerifier import TxVerifier
-from .exception import BlockVerificationFailed
-from .exception import BlockOutOfChain
+from .exceptions import BlockVerificationFailed, BlockOutOfChain
 
 class BlockVerifier:
     def __init__(self, db):
