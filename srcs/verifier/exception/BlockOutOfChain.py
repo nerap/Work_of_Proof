@@ -1,0 +1,2 @@
+class BlockOutOfChain(Exception):
+    pass
