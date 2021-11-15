@@ -6,7 +6,7 @@ class DB:
         self.config = {
             'txs_per_block': 4,
             'mining_reward': 25,
-            'difficulty': 20,
+            'difficulty': 22,
         }
 
         self.block_index = 0
