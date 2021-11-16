@@ -20,6 +20,12 @@ req:
 hook:
 	git config core.hooksPath .githooks
 
+#Running test
+test: venv
+	rm -rf test/wallet_test/test_*
+	./$(VENV)/bin/python3 -m unittest test/*_test.py
+	rm -rf test/wallet_test/test_*
+
 re : clean all
 
 clean:

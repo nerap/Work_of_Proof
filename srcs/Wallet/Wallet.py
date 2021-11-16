@@ -26,14 +26,14 @@ class Wallet:
         return self._priv_key
 
     @classmethod
-    def create(cls, folder='.wallet'):
+    def create(cls, folder='.wallet/'):
         inst = cls(folder)
         inst._pub_key, inst._priv_key = rsa.newkeys(512)
         inst.save_in_folder()
         return inst
 
     @classmethod
-    def get(cls, folder='.wallet'):
+    def get(cls, folder='.wallet/'):
         inst = cls(folder)
         inst.read_pair_keys()
         return inst
@@ -50,10 +50,10 @@ class Wallet:
 
     def write_pair_keys(self):
         try:
-            with open(self._folder + '/wallet_key', 'wb') as _priv_key_file:
-                _priv_key_data = _priv_key_file.write(self._priv_key.save_pkcs1())
-            with open(self._folder + '/wallet_key.pub', 'wb') as _pub_key_file:
-                _pub_key_data = _pub_key_file.write(self._pub_key.save_pkcs1())
+            with open(self._folder + 'wallet_key', 'wb') as _priv_key_file:
+                _priv_key_file.write(self._priv_key.save_pkcs1())
+            with open(self._folder + 'wallet_key.pub', 'wb') as _pub_key_file:
+                _pub_key_file.write(self._pub_key.save_pkcs1())
         except OSError as err:
             print("Error: {0}".format(err))
             sys.exit(1)
@@ -63,9 +63,9 @@ class Wallet:
  
     def read_pair_keys(self):
         try:
-            with open(self.folder + 'wallet_key', 'rb') as _priv_key_file:
+            with open(self._folder + 'wallet_key', 'rb') as _priv_key_file:
                 _priv_key_data = _priv_key_file.read()
-            with open(self.folder + 'wallet_key.pub', 'rb') as _pub_key_file:
+            with open(self._folder + 'wallet_key.pub', 'rb') as _pub_key_file:
                 _pub_key_data = _pub_key_file.read()
             self._priv_key = rsa.PrivateKey.load_pkcs1(_priv_key_data)
             self._pub_key = rsa.PublicKey.load_pkcs1(_pub_key_data)
