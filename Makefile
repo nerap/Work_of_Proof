@@ -19,7 +19,7 @@ m_one:
 	./venv/bin/python3 main.py --port=8000 --mine=1
 
 m_two:
-	./venv/bin/python3 main.py --port=8001 --mine=1
+	./venv/bin/python3 main.py --port=8001 --mine=1 --node=MEgCQQCr1/Jwd/noi6mivPPFw2/trc+xQuRplWoEdovcFixht5QEJe5wtLvV77nW2vBQluyF/fygNBH999IZFunUvRiLAgMBAAE=
 
 m_three:
 	./venv/bin/python3 main.py --port=8002 --mine=1
