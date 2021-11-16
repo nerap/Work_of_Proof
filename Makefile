@@ -14,6 +14,12 @@ venv: $(VENV)/bin/activate
 run: venv
 	./$(VENV)/bin/python3 main.py
 
+req:
+	$(VENV)/bin/pip3 freeze > requirements.txt
+
+hook:
+	git config core.hooksPath .githooks
+
 re : clean all
 
 clean:
