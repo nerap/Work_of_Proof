@@ -13,7 +13,7 @@ class TestWallet(unittest.TestCase):
         dir_test = wallet_directory + '/test00/'
         wall_test = Wallet.create(folder=dir_test)
         wall_read_test = Wallet.get(folder=dir_test)
-        self.assertEqual(wall_test.address, wall_read_test.address)
+        self.assertEqual(wall_test._pub_key, wall_read_test._pub_key)
         self.assertEqual(wall_test.priv, wall_read_test.priv)
 
     def test_wallet_01(self):
