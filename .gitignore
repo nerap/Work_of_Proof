@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+#default wallet location
+.wallet
+
 # Distribution / packaging
 .Python
 build/
