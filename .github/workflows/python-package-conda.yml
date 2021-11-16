@@ -1,5 +1,6 @@
 name: Work of Proof Blockchain
 
+
 on:
   release:
     types: [created]
