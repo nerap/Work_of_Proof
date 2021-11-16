@@ -26,4 +26,4 @@ clean:
 	rm -rf $(VENV)
 	find . -type f -name '*.pyc' -delete
 
-.PHONY: all venv run clean re
+.PHONY: all venv run clean re hook req
