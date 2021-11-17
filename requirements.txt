@@ -1,2 +1,4 @@
+merkletools==1.0.3
 pyasn1==0.4.8
+pysha3==1.0.2
 rsa==4.7.2

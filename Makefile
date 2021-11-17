@@ -16,6 +16,7 @@ run: venv
 
 req:
 	$(VENV)/bin/pip3 freeze > requirements.txt
+	git add requirements.txt
 
 hook:
 	git config core.hooksPath .githooks
