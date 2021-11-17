@@ -1,3 +1,4 @@
+import sys
 from hashlib import sha256
 
 class Input:
@@ -21,16 +22,15 @@ class Input:
     def hash(self):
         if self._hash:
             return self._hash
-        if not self._signature and self._prev_transaction_hash != 'COINBASE':
-            raise Exception('Sign the first input')
+        if not self._signature and self._prev_transaction_hash != 'INIT':
+            print('Error : Input not signed')
+            sys.exit(1)
         hash_string = '{}{}{}{}'.format(self._prev_transaction_hash, self._output_index, self._address, self._signature, self._index)
         self._hash = sha256(sha256(hash_string.encode()).hexdigest().encode('utf8')).hexdigest()
         return self._hash
 
     @property
-    def as_dict(self):
-        print("hello")
-        print(self._signature)
+    def as_dict(self) -> dict:
         return {
             "_prev_transaction_hash" : self._prev_transaction_hash,
             "_output_index" : self._output_index,
